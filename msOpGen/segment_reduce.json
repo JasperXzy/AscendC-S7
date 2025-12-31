@@ -1,0 +1,64 @@
+[
+    {
+        "op": "SegmentReduce",
+        "input_desc": [
+            {
+                "name": "data",
+                "format": ["ND"],
+                "type": ["float32", "float16", "bfloat16"],
+                "param_type": "required"
+            },
+            {
+                "name": "lengths",
+                "format": ["ND"],
+                "type": ["int32", "int32", "int32"],
+                "param_type": "optional"
+            },
+            {
+                "name": "indices",
+                "format": ["ND"],
+                "type": ["int32", "int32", "int32"],
+                "param_type":"optional"
+            },
+            {
+                "name": "offsets",
+                "format": ["ND"],
+                "type": ["int32", "int32", "int32"],
+                "param_type":"optional"
+            },
+            {
+                "name": "initial",
+                "format": ["ND"],
+                "type": ["float32", "float16", "bfloat16"],
+                "param_type":"optional"
+            }
+        ],
+        "output_desc": [
+            {
+                "name": "out",
+                "format": ["ND"],
+                "type": ["float32", "float16", "bfloat16"],
+                "param_type": "required"
+            }
+        ],
+        "attr": [
+            {
+                "name": "reduce",
+                "type": "string",
+                "param_type": "required"
+            },
+            {
+                "name": "axis",
+                "type": "int",
+                "param_type": "required",
+                "default_value": "0"
+            },
+            {
+                "name": "unsafe",
+                "type": "bool",
+                "param_type": "required",
+                "default_value": "FALSE"
+            }            
+        ]
+    }
+]

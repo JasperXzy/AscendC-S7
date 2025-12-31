@@ -1,0 +1,28 @@
+[
+    {
+        "op": "Fmax",
+        "input_desc": [
+            {
+                "name": "input",
+                "format": ["ND"],
+                "type": ["bool","float32","float16","bfloat16","int64","int32","int16","int8","uint8"],
+                "param_type": "required"
+            },
+            {
+                "name": "other",
+                "format": ["ND"],
+                "type": ["bool","float32","float16","bfloat16","int64","int32","int16","int8","uint8"],
+                "param_type": "required"
+            }
+        ],
+        "output_desc": [
+            {
+                "name": "out",
+                "format": ["ND"],
+                "type": ["bool","float32","float16","bfloat16","int64","int32","int16","int8","uint8"],
+                "param_type": "required"
+            }
+        ],
+        "attr": []
+    }
+]
