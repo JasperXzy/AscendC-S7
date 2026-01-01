@@ -20,29 +20,40 @@ static ge::graphStatus TilingFunc(gert::TilingContext* context)
   uint32_t sizeof_datatype = ge::GetSizeByDataType(dt);
   uint32_t ALIGN_NUM = 32 / sizeof_datatype;
 
-  // Calculate max elements per tile based on UB size
+  // Set TilingKey based on DataType
+  // Order: bool, float32, float16, bfloat16, int64, int32, int16, int8, uint8
+  uint64_t tilingKey = 0;
+  if (dt == ge::DT_BOOL) tilingKey = 1;
+  else if (dt == ge::DT_FLOAT) tilingKey = 2;
+  else if (dt == ge::DT_FLOAT16) tilingKey = 3;
+  else if (dt == ge::DT_BF16) tilingKey = 4;
+  else if (dt == ge::DT_INT64) tilingKey = 5;
+  else if (dt == ge::DT_INT32) tilingKey = 6;
+  else if (dt == ge::DT_INT16) tilingKey = 7;
+  else if (dt == ge::DT_INT8) tilingKey = 8;
+  else if (dt == ge::DT_UINT8) tilingKey = 9;
+  
+  context->SetTilingKey(tilingKey);
+
   uint32_t max_tile_elements = (UB_SIZE / 3) / sizeof_datatype;
 
   context->SetBlockDim(BLOCK_DIM);
 
-  uint32_t elements_per_core = (totalLength + BLOCK_DIM - 1) / BLOCK_DIM;
+  uint32_t elements_per_core_max = (totalLength + BLOCK_DIM - 1) / BLOCK_DIM;
   
   uint32_t tileLength = 0;
-  if (elements_per_core > max_tile_elements) {
+  if (elements_per_core_max > max_tile_elements) {
       tileLength = max_tile_elements;
-      // Must align tileLength
       tileLength = (tileLength / ALIGN_NUM) * ALIGN_NUM;
   } else {
-      tileLength = elements_per_core;
-      // Align tileLength upwards if needed, but last tile handles remainder
+      tileLength = elements_per_core_max;
       tileLength = (tileLength + ALIGN_NUM - 1) / ALIGN_NUM * ALIGN_NUM;
   }
-
   // Avoid tileLength being 0
   if (tileLength == 0) tileLength = ALIGN_NUM;
-  
-  uint32_t tileNum = (elements_per_core + tileLength - 1) / tileLength;
-  uint32_t lasttileLength = elements_per_core % tileLength;
+
+  uint32_t tileNum = (elements_per_core_max + tileLength - 1) / tileLength;
+  uint32_t lasttileLength = elements_per_core_max % tileLength;
   if (lasttileLength == 0) lasttileLength = tileLength;
 
   tiling.set_totalLength(totalLength);
