@@ -35,7 +35,12 @@ static ge::graphStatus TilingFunc(gert::TilingContext* context)
   
   context->SetTilingKey(tilingKey);
 
-  uint32_t max_tile_elements = (UB_SIZE / 3) / sizeof_datatype;
+  uint32_t max_tile_elements = 0;
+  if (sizeof_datatype == 1) {
+      max_tile_elements = UB_SIZE / 9;
+  } else {
+      max_tile_elements = (UB_SIZE / 3) / sizeof_datatype;
+  }
 
   context->SetBlockDim(BLOCK_DIM);
 
